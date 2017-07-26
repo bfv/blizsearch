@@ -1,0 +1,27 @@
+.table {
+    width: 50%;
+}
+
+.body {
+    margin: 1%;
+}
+
+.info {
+    width: 400px;
+    margin-top: 20px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+}
+
+.header {
+    display: inline;
+}
+
+.title {
+    vertical-align: bottom;
+    margin-left: 2%;
+}
+
+.info-table {
+    width: 100%;
+}

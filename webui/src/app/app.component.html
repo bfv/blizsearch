@@ -1,0 +1,48 @@
+<!--The whole content below can be removed with the new code.-->
+<div class="body">
+
+  <div>
+    <img src="./assets/flusso.png" class="header"/>
+    <h1 class="header title">BlizSearch</h1>
+  </div>
+
+  <hr/>
+
+  <form>
+    <input type="text" name="city" [(ngModel)]="lastname" placeholder="lastname">
+    <input type="text" name="city" [(ngModel)]="city" placeholder="city">
+    <button type="submit" (click)="submit()" class="btn btn-primary">Search...</button>
+  </form>
+
+  <div class="results">
+
+    <div class="info">
+      <table class="info-table">
+        <tr>
+          <td><p>elapsed: {{elapsed}} ms</p></td>
+          <td><p>count: {{count}}</p></td>
+        </tr>
+      </table>
+    </div>
+
+    <hr/>
+
+    <table class="table table-hover table-sm">
+      <thead class="thead-default">
+        <tr>
+          <th>#</th>
+          <th>Name</th>
+          <th>City</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let person of persons; let i = index">
+          <th scope="row">{{ i + 1 }}</th>
+          <td>{{person.lastname}}</td>
+          <td>{{person.address.city}}</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+</div>

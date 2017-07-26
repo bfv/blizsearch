@@ -1,0 +1,1 @@
+select distinct(city), count(*) from pub.address group by city

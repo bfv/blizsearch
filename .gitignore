@@ -1,0 +1,6 @@
+data/ttname*
+search/node_modules
+webui/node_modules
+*.log
+electron
+data

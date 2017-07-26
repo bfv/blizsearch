@@ -1,0 +1,1 @@
+select count(*) from pub.address where city = 'Zwolle'
