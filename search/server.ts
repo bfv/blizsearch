@@ -29,6 +29,9 @@ export class Server {
 
     private config() {
 
+        this.router = express.Router();
+
+        // setup CORS
         const options: cors.CorsOptions = {
             // allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
             allowedHeaders: ["Origin", "Content-Type", "Accept"],
@@ -37,11 +40,12 @@ export class Server {
             origin: "http://localhost:4230",
             preflightContinue: false
         };
-
-        this.router = express.Router();
         this.router.use(cors(options));
         
+        // enable parsing json out of the HTTP body
         this.jsonParser = bodyParser.json();
+
+        // connect the db
         this.dbconnector = new MongoConnector();
         this.dbconnector.init().then(result => {
             console.log('database connected');
@@ -62,8 +66,8 @@ export class Server {
         this.router.post('/update', this.jsonParser, routes.update);
         this.router.post('/bulkcreate', this.jsonParser, routes.bulkcreate);
         this.router.post('/changeseq', this.jsonParser, routes.changeseqidPost);
-        // catch all
-        this.router.get('*', routes.error404);
+        this.router.get('*', routes.error404);  // catch all
+
         this.app.use(this.router);
     }
 }
