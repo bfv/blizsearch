@@ -3,10 +3,10 @@ import { Person } from './../types/person';
 
 export interface DbConnector {
     init(): Promise<boolean>;
-    searchPersons(lastname: string, city: string, callback): void;
-    upsert(person: Person): void;
+    searchPersons(lastname: string, city: string): Promise<Person[]>;
+    upsert(person: Person): Promise<void>;
     updateChangeSeqid(table: string, changeseqid: number, callback): void;
-    bulkCreate(persons: Person[], callback): void;
-    getCities(callback): void;
-    getChangeSeqId(callback);
+    bulkCreate(persons: Person[]): Promise<void>;
+    getCities(): Promise<string[]>;
+    getChangeSeqId(): Promise<string[]>;
 }

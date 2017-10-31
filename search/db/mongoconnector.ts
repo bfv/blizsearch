@@ -19,14 +19,13 @@ export class MongoConnector implements DbConnector {
             client.connect('mongodb://localhost:27017/mongotst1', (err, db) => {
                 if (!err) {
                     assert.equal(err, null);
-                    console.log('database connected');
                     this.db = db;
                     this.persons = db.collection('persons');
                     this.changeseq = db.collection('changeseq');
                     resolve(true);
                 }
                 else {
-                    reject('MongoDB not connected');
+                    reject('MongoDB not connected: ' + err.message); 
                 }
             });  
             
@@ -34,27 +33,42 @@ export class MongoConnector implements DbConnector {
         return promise;
     }
 
-    public upsert(person: Person): void {
-        //console.log('upsert: ', person);
-        this.persons.update({ id: person.id}, person, { upsert: true });
+    public upsert(person: Person): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.persons.update({ id: person.id}, person, { upsert: true }).then(() => {
+                resolve();
+            }, (err) => {
+                reject();
+            });
+        })
+        
     }
 
-    public bulkCreate(persons: Person[], callback): void {
-        this.persons.insertMany(persons, (err, db) => {
-            if (err) {
+    public bulkCreate(persons: Person[]): Promise<void> {
+        return new Promise<void>((resolve, reject) => { 
+            this.persons.insertMany(persons).then(() => {
+                resolve();
+            }, (err) => {
                 console.log(err.message);
-            }
-            callback();
+                reject();
+            });
         });
     }
 
-    public updateChangeSeqid(table: string, changeseqid: number, callback): void {
+    public updateChangeSeqid(table: string, changeseqid: number, callback): Promise<void> {
         //this.system.update({ id: 1}, { id: 1, changeseqid: changeseqid }, { upsert: true });
-        this.changeseq.update({ table: table}, { table: table, changeseqid: changeseqid}, { upsert: true });
-        callback();
+
+        return new Promise<void>((resolve, reject) => {
+            this.changeseq.update({ table: table}, { table: table, changeseqid: changeseqid}, { upsert: true })
+            .then(() => { 
+                resolve();
+            }, (err) => {
+                reject();
+            })
+        });
     }
 
-    public searchPersons(lastname: string, city: string, callback): void {
+    public searchPersons(lastname: string, city: string): Promise<Person[]> {
 
         let persons: Person[];
         let criteria = {};
@@ -66,31 +80,20 @@ export class MongoConnector implements DbConnector {
         if (city && city != '') {
             criteria['address.city'] = city;
         }
-        
+
         console.log('begin search: ', criteria);
-
-        this.persons.find(criteria).toArray().then(data => {
-            //console.log(JSON.stringify(data));
-            console.log('done');
-            persons = <Person[]> data;
-            callback(persons);
+        return new Promise<Person[]>((resolve, reject) => {
+            this.persons.find(criteria).toArray().then(data => {
+                resolve(data);
+            });
         });
-        
     }
 
-    public getCities(callback):void {
-        this.persons.distinct('address.city', null).then(
-            data => {
-                callback(<string[]> data);
-            }
-        )
+    public getCities(): Promise<string[]> {
+        return this.persons.distinct('address.city', null);
     }
 
-    public getChangeSeqId(callback) {
-        this.changeseq.find({}).toArray().then(
-            data => {
-                callback(data);
-            }
-        )
+    public getChangeSeqId():Promise<string[]> {
+        return this.changeseq.find({}).toArray();
     }
 }

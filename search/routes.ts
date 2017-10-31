@@ -25,13 +25,18 @@ export class Routes {
 
         let persons: Person[];
         console.log('search');
-        let lastname = req.param('lastname');
-        let city = req.param('city');
-        
-        Routes.connector.searchPersons(lastname, city, (data) => {
+        let lastname = req.query['lastname'];
+        let city = req.query['city'];
+
+        const begin = new Date();
+        Routes.connector.searchPersons(lastname, city).then((data) => {
             persons = <Person[]> data;
+
+            const end = new Date();            
+            console.log('#persons:', persons.length, 'in', end.getTime() - begin.getTime(), '\bms');
+            
             res.contentType('application/json');
-            res.send({ route: '/search', persons: persons, status: 'ok'});
+            res.send(persons);
         });        
     }
 
@@ -54,7 +59,7 @@ export class Routes {
 
     public changeseqid(req: Request, res: Response, next: NextFunction) {
         console.log('GET /changeseqid:');
-        Routes.connector.getChangeSeqId((data) => {
+        Routes.connector.getChangeSeqId().then((data) => {
             console.log('data: ', data);
             res.contentType('application/json');
             res.send({ route: '/changeseqid', changeseqid: data, status: 'ok'});
@@ -65,7 +70,7 @@ export class Routes {
         let persons: Person[];     
         persons = req.body.array;
         
-        Routes.connector.bulkCreate(persons, () => {
+        Routes.connector.bulkCreate(persons).then(() => {
             res.contentType('application/json');
             res.send({ route: '/bulkupdate', status: 'ok'});        
         });
@@ -73,13 +78,11 @@ export class Routes {
 
     public cities(req: Request, res: Response, next: NextFunction) {
         console.log('GET /cities');
-        Routes.connector.getCities(
-            data => {
-                let cities = <string[]> data;
-                res.contentType('application/json');
-                res.send(cities);
-            }
-        );
+        Routes.connector.getCities().then(data => {
+            let cities = <string[]> data;
+            res.contentType('application/json');
+            res.send(cities);
+        });
     }
 
     public changeseqidPost(req: Request, res: Response, next: NextFunction) {
