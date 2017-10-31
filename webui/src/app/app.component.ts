@@ -14,7 +14,7 @@ export class AppComponent {
   public lastname: string;
   public persons: Person[];
   public elapsed: number;
-  
+
   public count: number;
 
   constructor(private http: Http) {
@@ -34,15 +34,15 @@ export class AppComponent {
       if (this.city) {
         searchParams.set('city', this.city);
       }
+
       const options: RequestOptionsArgs = { };
       options.search = searchParams;
 
       this.http.get('http://localhost:4220/search', options).subscribe(
         data => {
           this.elapsed = new Date().getTime() - start;
-          const jsonData = data.json();
-          this.count = jsonData['persons'].length;
-          this.persons = jsonData['persons'];
+          this.persons = <Person[]> data.json();
+          this.count = this.persons.length;
         }
       );
     }
