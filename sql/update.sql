@@ -1,0 +1,1 @@
+UPDATE PUB."address" SET "city"='ktm6b' WHERE "city"='ktm6a'
