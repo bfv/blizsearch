@@ -4,3 +4,4 @@ webui/node_modules
 *.log
 electron
 data
+*.r
