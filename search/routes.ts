@@ -88,9 +88,11 @@ export class Routes {
     public changeseqidPost(req: Request, res: Response, next: NextFunction) {
         console.log('POST /changeseq: ', req.body);
         const update = <UpdateChangeSeg> req.body;
-        Routes.connector.updateChangeSeqid(update.table, update.changeseqid, () => {
+        Routes.connector.updateChangeSeqid(update.table, update.changeseqid).then(() => {
             res.contentType('application/json');
             res.send({ route: '/changeseq', status: 'ok'}); 
+        }, (err) => {
+            console.log(err);
         });
     }
 
