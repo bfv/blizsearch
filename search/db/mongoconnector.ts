@@ -55,7 +55,7 @@ export class MongoConnector implements DbConnector {
         });
     }
 
-    public updateChangeSeqid(table: string, changeseqid: number, callback): Promise<void> {
+    public updateChangeSeqid(table: string, changeseqid: number): Promise<void> {
         //this.system.update({ id: 1}, { id: 1, changeseqid: changeseqid }, { upsert: true });
 
         return new Promise<void>((resolve, reject) => {
